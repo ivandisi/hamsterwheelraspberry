@@ -12,9 +12,11 @@ from signal import pause
 # =======================
 # CONFIG
 # =======================
-DB_FILE = "pistacchiodbnew.json"
+DB_FILE = "pistacchiodbnew2.json"
 tripLength = 91
 Digital_PIN = 22
+MIN_GIRO_DT = 0.01 
+WATCHDOG_TIMEOUT = 30  # 60 secondi
 
 # =======================
 # GLOBALS
@@ -24,15 +26,23 @@ db_lock = threading.Lock()
 db_queue = Queue()
 stop_event = threading.Event()
 
+last_gpio_time = 0
+last_db_write = 0
+
 # =======================
 # GPIO
 # =======================
-sensor = Button(Digital_PIN, pull_up=True, bounce_time=0.001)
+sensor = Button(Digital_PIN, pull_up=True)
 
 def myCounter():
-    """Callback GPIO (NON blocca mai)"""
+    """Callback GPIO con debounce software"""
+    global last_gpio_time
     try:
         ts = time.time()
+        if ts - last_gpio_time < MIN_GIRO_DT:
+            return  # debounce software
+        last_gpio_time = ts
+
         print("Pistacchio", ts)
 
         data = datetime.fromtimestamp(ts)
@@ -51,15 +61,47 @@ sensor.when_pressed = myCounter
 # DB WRITER THREAD
 # =======================
 def dbWriterThread():
+    global last_db_write
     print("DB writer avviato")
     while not stop_event.is_set():
         try:
             item = db_queue.get(timeout=1)
             with db_lock:
                 db.insert(item)
+            last_db_write = time.time()
             db_queue.task_done()
         except Exception:
             pass
+
+# =======================
+# WATCHDOG THREADS
+# =======================
+
+def gpioWatchdogActive():
+    global sensor, last_gpio_time
+    while not stop_event.is_set():
+        delta = time.time() - last_gpio_time
+        if delta > WATCHDOG_TIMEOUT:
+            #print(f"⚠️ WATCHDOG GPIO: inattività {int(delta)}s, reset sensore...")
+            try:
+                # rimuove il sensore attuale
+                sensor.close()
+                time.sleep(0.1)
+                # ricrea il sensore
+                sensor = Button(Digital_PIN, pull_up=True)
+                sensor.when_pressed = myCounter
+                last_gpio_time = time.time()
+                #print("✅ Sensore GPIO resettato correttamente")
+            except Exception as e:
+                print("❌ Errore nel reset GPIO:", e)
+        time.sleep(1)  # controllo frequente
+
+def dbWatchdog():
+    while not stop_event.is_set():
+        qsize = db_queue.qsize()
+        if qsize > 100:  # se la coda DB cresce troppo
+            print(f"⚠️ WATCHDOG DB: queue lunga = {qsize}")
+        time.sleep(5)
 
 # =======================
 # DB READ FUNCTIONS
@@ -68,8 +110,7 @@ def getTripsByHour(day, hour):
     Qry = Query()
     with db_lock:
         data = db.search(
-            (Qry.data == day) &
-            Qry.hour.test(lambda h: h.startswith(hour))
+            (Qry.data == day) & Qry.hour.test(lambda h: h.startswith(hour))
         )
     return {
         'trips': len(data),
@@ -208,6 +249,8 @@ print("[CTRL + C per terminare]")
 threading.Thread(target=dbWriterThread, daemon=True).start()
 threading.Thread(target=serverThread, daemon=True).start()
 threading.Thread(target=commandThread).start()
+threading.Thread(target=gpioWatchdogActive, daemon=True).start()
+threading.Thread(target=dbWatchdog, daemon=True).start()
 
 try:
     pause()
