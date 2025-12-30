@@ -35,8 +35,7 @@ import it.id.pistacchio.viewmodel.DailySearchViewModel
 import it.id.pistacchio.viewmodel.DailyViewModel
 import it.id.pistacchio.viewmodel.YearViewModel
 import java.time.LocalDate
-
-
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -86,6 +85,10 @@ fun HomeView( viewModel: DailyViewModel = viewModel(), lengthViewModel: DailyLen
 fun HistoryView(viewModel: DailySearchViewModel = viewModel()) {
     val cs = rememberCalendarState()
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    selectedDate = LocalDate.now()
+    val today = LocalDate.now()
+    val formatter = DateTimeFormatter.ofPattern("yyyy MM dd")
+    var label = today.format(formatter)
 
     Column {
         Spacer(modifier = Modifier.size(45.dp))
@@ -96,7 +99,14 @@ fun HistoryView(viewModel: DailySearchViewModel = viewModel()) {
                 modifier = Modifier
                     .clickable {
                         selectedDate = dayState.date
-                        viewModel.fetchDataFromApi("" + selectedDate?.year + selectedDate?.month?.value?.let {
+                        label = "" + selectedDate?.year + " " + selectedDate?.month?.value?.let {
+                            String.format("%02d", it)
+                        } + " " + selectedDate?.dayOfMonth?.let {
+                            String.format("%02d", it)
+                        }
+                        viewModel.fetchDataFromApi(
+                            "" + selectedDate?.year
+                        + selectedDate?.month?.value?.let {
                             String.format("%02d", it)
                         } + selectedDate?.dayOfMonth?.let {
                             String.format("%02d", it)
@@ -112,11 +122,8 @@ fun HistoryView(viewModel: DailySearchViewModel = viewModel()) {
                 Text(dayState.date.dayOfMonth.toString())
             }
         })
-        Text("Searching for: "+selectedDate?.year + selectedDate?.month?.value?.let {
-            String.format("%02d", it)
-        } + selectedDate?.dayOfMonth?.let {
-            String.format("%02d", it)
-        },
+        Text(
+            "Searching for: $label",
             modifier = Modifier
                 .padding(10.dp))
         RecapView(viewModel)
