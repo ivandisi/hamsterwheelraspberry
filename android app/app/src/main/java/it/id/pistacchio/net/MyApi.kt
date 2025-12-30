@@ -1,5 +1,6 @@
 package it.id.pistacchio.net
 
+import android.annotation.SuppressLint
 import android.content.Context
 import it.id.pistacchio.Constants
 import okhttp3.OkHttpClient
@@ -7,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+@SuppressLint("StaticFieldLeak")
 object MyApi {
     private lateinit var context: Context
 

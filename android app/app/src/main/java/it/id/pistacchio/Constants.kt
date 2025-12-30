@@ -3,7 +3,6 @@ package it.id.pistacchio
 object Constants {
     object GetAPI {
         const val URL: String = "http://192.168.1.99:8000//"
-        const val NAME = "api"
     }
 
     object Support {
