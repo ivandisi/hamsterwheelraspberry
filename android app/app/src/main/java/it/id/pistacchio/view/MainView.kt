@@ -1,9 +1,13 @@
 package it.id.pistacchio.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -11,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,32 +41,44 @@ fun HomeView( viewModel: DailyViewModel = viewModel(), lengthViewModel: DailyLen
                 containerColor = MaterialTheme.colorScheme.primary,
             ),
             modifier = Modifier
-                .size(420.dp,205.dp)
+                .size(420.dp, 305.dp)
                 .padding(8.dp, 8.dp)
         ) {
-            Row {
-                IconButton(
-                    onClick = {
-                        viewModel.fetchDataFromApi()
-                        lengthViewModel.fetchDataFromApi()
-                        yearViewModel.fetchDataFromApi()
+            Column ( modifier = Modifier
+                .fillMaxWidth()) {
+                Row {
+                    IconButton(
+                        onClick = {
+                            viewModel.fetchDataFromApi()
+                            lengthViewModel.fetchDataFromApi()
+                            yearViewModel.fetchDataFromApi()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.refresh),
+                            contentDescription = stringResource(id = R.string.refresh),
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(28.dp)
+                        )
                     }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.refresh),
-                        contentDescription = stringResource(id = R.string.refresh),
+                    Text(
+                        text = "Hello I'm Pistacchio !",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
-                            .padding(8.dp)
-                            .size(28.dp)
+                            .padding(12.dp)
                     )
                 }
-                Text(
-                    text = "Hello I'm Pistacchio !",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(12.dp)
-                )
+                Column( modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        painter = painterResource(id = R.drawable.image),
+                        contentDescription = null,
+                        Modifier.height(400.dp)
+                        .width(400.dp)
+                    )
+                }
             }
         }
         RecapView(viewModel)
