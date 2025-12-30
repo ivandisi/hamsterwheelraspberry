@@ -9,7 +9,7 @@ POC of a simple solution based on Rasberry PI with a Hall Effect Sensor to retri
 
 ## General info
 
-The doc should provide all information needed to understand the methods, but if not feel free to add a issue in github and I'll address any questions! :)
+The doc should provide all information needed to run the project, but if not feel free to add a issue in github and I'll address any questions! :)
 
 ### POC
 
@@ -50,3 +50,19 @@ Check requirements:
 ### To run the Android APP:
 
 Import it in Android Studio and run it
+
+Before start it, please be sure to address the right IP in the Constants.kt
+
+```kotlin
+  object GetAPI {
+        const val URL: String = "http://192.168.1.99:8000//"
+    }
+```
+
+
+Greetings from my hamster Sergente Pistacchio
+
+[<img src="https://github.com/ivandisi/Hamster-Wheel-Rasberry-Hall-Effect-Sensor/blob/main/other/pistacchio.jpg" height="100">]
+
+
+   
