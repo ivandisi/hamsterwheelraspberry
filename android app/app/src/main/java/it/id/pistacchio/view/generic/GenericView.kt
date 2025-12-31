@@ -30,6 +30,7 @@ import it.id.pistacchio.Constants
 import it.id.pistacchio.viewmodel.DailyLengthViewModel
 import it.id.pistacchio.viewmodel.DailyViewModel
 import it.id.pistacchio.viewmodel.YearViewModel
+import java.util.Locale
 
 @Composable
 fun RecapView(viewModel: DailyViewModel = viewModel()) {
@@ -55,7 +56,9 @@ fun RecapView(viewModel: DailyViewModel = viewModel()) {
                     .wrapContentHeight()
             )
             Text(
-                text = "${viewModel.totalLength.value} km",
+                text = "${viewModel.totalLength.value.let {
+                    String.format(Locale.getDefault(), "%.2f", it)
+                }} km",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier

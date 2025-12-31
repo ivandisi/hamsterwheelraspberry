@@ -1,10 +1,12 @@
 package it.id.pistacchio
 
+import android.media.Image
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
@@ -21,7 +23,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.unit.dp
 import it.id.pistacchio.ui.theme.MyApplicationTheme
 import it.id.pistacchio.view.DailyLengthView
 import it.id.pistacchio.view.DailyView
@@ -54,8 +59,9 @@ fun MyApplicationApp() {
                 item(
                     icon = {
                         Icon(
-                            it.icon,
-                            contentDescription = it.label
+                            ImageVector.vectorResource(it.icon),
+                            contentDescription = it.label,
+                            modifier = Modifier.size(16.dp)
                         )
                     },
                     label = { Text(it.label) },
@@ -89,12 +95,12 @@ fun MyApplicationApp() {
 
 enum class AppDestinations(
     val label: String,
-    val icon: ImageVector,
+    val icon: Int,
 ) {
-    HOME("Recap", Icons.Default.Home),
-    TODAY("Today", Icons.Default.Refresh),
-    TODAY_LENGTH("Length", Icons.Default.Info),
-    HISTORY("History", Icons.Default.DateRange),
-    YEAR("Year", Icons.Default.DateRange)
+    HOME("Recap",  R.drawable.house_blank),
+    TODAY("Today", R.drawable.calendar_check),
+    TODAY_LENGTH("Length", R.drawable.measuring_tape),
+    HISTORY("History", R.drawable.time_past),
+    YEAR("Year", R.drawable.calendar)
 }
 
