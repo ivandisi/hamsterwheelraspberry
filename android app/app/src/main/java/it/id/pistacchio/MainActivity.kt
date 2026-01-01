@@ -99,7 +99,7 @@ enum class AppDestinations(
 ) {
     HOME("Recap",  R.drawable.house_blank),
     TODAY("Today", R.drawable.calendar_check),
-    TODAY_LENGTH("Length", R.drawable.measuring_tape),
+    TODAY_LENGTH("Distance", R.drawable.measuring_tape),
     HISTORY("History", R.drawable.time_past),
     YEAR("Year", R.drawable.calendar)
 }

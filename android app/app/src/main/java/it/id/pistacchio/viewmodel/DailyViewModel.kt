@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import ir.ehsannarmani.compose_charts.models.Bars
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import it.id.pistacchio.Constants
@@ -23,6 +26,7 @@ import java.time.format.DateTimeFormatter
 
 open class DailyViewModel : ViewModel() {
 
+    val _isLoading =  mutableStateOf<Boolean>(true)
     val _dataList = mutableStateOf<List<Bars>>(emptyList())
     var _totalLength = mutableStateOf<Float>(0.0F)
     var _avgTrips = mutableStateOf<Int>(0)
@@ -35,6 +39,8 @@ open class DailyViewModel : ViewModel() {
     var intMostIntenseHour: State<Int> = _intMostIntenseHour
     var mostIntenseHour: State<Int> = _mostIntenseHour
     var speed: State<SpeedModel> = _speed
+    var isLoading : State<Boolean> = _isLoading
+
     private var totalTrip = 0
 
     init {
@@ -50,6 +56,9 @@ open class DailyViewModel : ViewModel() {
     }
 
     fun fetchDataFromApi() {
+
+        _isLoading.value = true
+
         viewModelScope.launch {
             val result = loadData()
             if (result != null && result.isSuccessful) {
@@ -100,6 +109,8 @@ open class DailyViewModel : ViewModel() {
             if (speed != null && speed.isSuccessful && speed.body() != null) {
                 _speed.value = speed.body()!!
             }
+
+            _isLoading.value = false
         }
     }
 

@@ -4,13 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -32,43 +35,59 @@ fun HistoryView(viewModel: DailySearchViewModel = viewModel()) {
     val formatter = DateTimeFormatter.ofPattern("yyyy MM dd")
     var label = today.format(formatter)
 
-    Column {
-        Header()
+    Box(modifier = Modifier.fillMaxSize()) {
 
-        StaticCalendar(
-            calendarState =  cs,
-            dayContent = { dayState ->
-                Box(
-                    modifier = Modifier
-                        .clickable {
-                            selectedDate = dayState.date
-                            label = "" + selectedDate?.year + " " + selectedDate?.month?.value?.let {
-                                String.format("%02d", it)
-                            } + " " + selectedDate?.dayOfMonth?.let {
-                                String.format("%02d", it)
+        Column {
+            Header()
+
+            StaticCalendar(
+                calendarState = cs,
+                dayContent = { dayState ->
+                    Box(
+                        modifier = Modifier
+                            .clickable {
+                                selectedDate = dayState.date
+                                label =
+                                    "" + selectedDate?.year + " " + selectedDate?.month?.value?.let {
+                                        String.format("%02d", it)
+                                    } + " " + selectedDate?.dayOfMonth?.let {
+                                        String.format("%02d", it)
+                                    }
+                                viewModel.fetchDataFromApi(
+                                    "" + selectedDate?.year
+                                            + selectedDate?.month?.value?.let {
+                                        String.format("%02d", it)
+                                    } + selectedDate?.dayOfMonth?.let {
+                                        String.format("%02d", it)
+                                    })
                             }
-                            viewModel.fetchDataFromApi(
-                                "" + selectedDate?.year
-                                        + selectedDate?.month?.value?.let {
-                                    String.format("%02d", it)
-                                } + selectedDate?.dayOfMonth?.let {
-                                    String.format("%02d", it)
-                                })
-                        }
-                        .background(
-                            if (dayState.date == selectedDate)
-                                Color.Gray
-                            else Color.Transparent
-                        )
-                        .padding(8.dp)
-                ) {
-                    Text(dayState.date.dayOfMonth.toString())
-                }
-            })
-        Text(
-            "Searching for: $label",
-            modifier = Modifier
-                .padding(10.dp))
-        RecapView(viewModel)
+                            .background(
+                                if (dayState.date == selectedDate)
+                                    Color.Gray
+                                else Color.Transparent
+                            )
+                            .padding(8.dp)
+                    ) {
+                        Text(dayState.date.dayOfMonth.toString())
+                    }
+                })
+            Text(
+                "Searching for: $label",
+                modifier = Modifier
+                    .padding(10.dp)
+            )
+            RecapView(viewModel)
+        }
+
+        if (viewModel.isLoading.value) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
     }
 }

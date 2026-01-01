@@ -29,7 +29,7 @@ class DailyLengthViewModel : ViewModel() {
             Bars(
                 "N/A",
                 listOf(
-                    Bars.Data(label = "Length", value = 0.0, color = SolidColor(Color.Gray))
+                    Bars.Data(label = "Distance", value = 0.0, color = SolidColor(Color.Gray))
                     )
             )
         )
@@ -56,7 +56,7 @@ class DailyLengthViewModel : ViewModel() {
                                 Constants.Support.HOURS.get(item.hour.toInt()),
                                 listOf(
                                         Bars.Data(
-                                        label = "Length in meter",
+                                        label = "Distance in meter",
                                         value = item.length.toDouble() / 100,
                                         color = SolidColor(SECONDARY)
                                     ),

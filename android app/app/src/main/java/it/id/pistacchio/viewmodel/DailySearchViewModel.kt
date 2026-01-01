@@ -42,6 +42,7 @@ class DailySearchViewModel : DailyViewModel() {
     }
 
     fun fetchDataFromApi(data: String) {
+        _isLoading.value = true
         viewModelScope.launch {
             val result = loadData(data)
             if (result != null && result.isSuccessful) {
@@ -92,6 +93,9 @@ class DailySearchViewModel : DailyViewModel() {
             if (speed != null && speed.isSuccessful && speed.body() != null) {
                 _speed.value = speed.body()!!
             }
+
+            _isLoading.value = false
+
         }
     }
 
