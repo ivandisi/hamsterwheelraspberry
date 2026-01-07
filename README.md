@@ -13,7 +13,7 @@ The doc should provide all information needed to run the project, but if not fee
 
 ### POC
 
-Project is based on Rasberry PI Board and AZ-Delivery KY-024
+Project is based on Rasberry PI Board and AZ-Delivery KY-024 (+ magnet)
 
 <p align="center" >
   <img src="https://www.az-delivery.de/cdn/shop/products/ky-024-linear-magnetic-hall-sensor-726599.jpg"
@@ -30,6 +30,14 @@ Project is based on Rasberry PI Board and AZ-Delivery KY-024
 
 * Rasberry PI Board -> [LINK](https://www.raspberrypi.com/)
 
+
+### HARDWARE EXAMPLE
+
+<p align="center" >
+  <img src="https://github.com/ivandisi/Hamster-Wheel-Rasberry-Hall-Effect-Sensor/blob/main/other/example.jpg" height="200">
+</p>
+
+(In my case I modded the sensor for a better fit)
 
 ## How to run
 
